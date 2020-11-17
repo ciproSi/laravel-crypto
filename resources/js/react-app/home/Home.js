@@ -1,10 +1,15 @@
 import React from 'react'
+import gpxParser from 'gpxparser';
 
 const Home = () => {
-
-    return (
-
+    
+     
+      
+      return (
+        <>
         <h1>home component</h1>
+        </>
+        
     )
 }
 

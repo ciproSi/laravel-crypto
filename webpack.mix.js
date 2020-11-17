@@ -28,6 +28,7 @@ if (!mix.inProduction()) {
 mix
     .sass('resources/scss/app.scss', 'public/css')
     .react('resources/js/react-app/index.jsx', 'public/js/')
+    .react('resources/js/ol-app/ol-map-index.js', 'public/js/')
  
     .browserSync({
         host: 'localhost',

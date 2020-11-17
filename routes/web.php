@@ -16,3 +16,11 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', 'IndexController@index')->name('index');
 Route::get('/register', 'IndexController@index');
 Route::get('/login', 'IndexController@index');
+
+//ol testing
+Route::get('/display-map', 'MapController@index');
+Route::get('/test', 'RouteController@test');
+
+
+Route::get('/new-route', 'RouteController@create');
+Route::post('/new-route', 'RouteController@store');
