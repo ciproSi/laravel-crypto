@@ -45,25 +45,20 @@ class RouteController extends Controller
         $route->length = $stats['distance'];
         $route->elevation_gain = $stats['cumulativeElevationGain'];
         $route->save();
+        $route_id = $route->id;
 
-
-        return response(compact('path', 'original_extension', 'route_name', 'name_to_be_saved', 'stats'), 200)
+        return response(compact('path','stats', 'route_id'), 200)
                   ->header('Content-Type', 'application/json');
         
     }
     
-    public function test ()
+    public function view ($id)
     {
-        $gpx = new phpGPX();
-    
-        // $content = Storage::get('/public/gpx/Evening_Run.gpx');
+        
+        $route = Route::findOrFail($id);
 
-        $file = $gpx->load('./gpx/Evening_Run.gpx');
-        
-        $stats = $file->tracks[0]->stats->toArray();
-        
-        dd($stats);
-        
+        return response(compact('route'), 200)
+                  ->header('Content-Type', 'application/json');
     }
 
 }

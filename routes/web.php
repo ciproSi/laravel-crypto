@@ -24,3 +24,4 @@ Route::get('/test', 'RouteController@test');
 
 Route::get('/new-route', 'RouteController@create');
 Route::post('/new-route', 'RouteController@store');
+Route::get('/route/{id}', 'RouteController@view');

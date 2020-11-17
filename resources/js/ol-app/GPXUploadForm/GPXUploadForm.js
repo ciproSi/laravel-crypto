@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios';
+import DisplayMapWithRoute from '../DisplayMapWithRoute/DisplayMapWithRoute';
+import NewRouteDetails from '../NewRouteDetails/NewRouteDetails';
 
 const GPXUploadForm = () => {
     const [routeName, setRouteName] = useState('');
     const [GPXFile, setGPXFile] = useState([]);
     const [GPXUploaded, setGPXUploaded] = useState(false);
+    const [routeData, setRouteData] = useState({});
 
     const handleChange = (e) => {
         setRouteName(e.target.value);
@@ -23,20 +26,43 @@ const GPXUploadForm = () => {
         let fd = new FormData();
         fd.append("GPXFile", GPXFile, GPXFile.name);
         fd.append('routeName', routeName);
+        
+        // send the data to API
         const response = await axios.post('/new-route', fd);
         console.log(response);
         
         if (response.status === 200) {
+            
+            //fetch the just saved data from DB (it was parsed meantime by back-end)
+            await fetchRoute(response.data.route_id);
+
+            //this will cause the next of new step to render
             setGPXUploaded(true);
         }
 
-        // TO DO: handle back end errors
+        // TO DO: handle back-end errors
+        
+    }
+
+    const fetchRoute = async (routeID) => {
+        const response = await axios.get('/route/' + routeID);
+        console.log(response);
+        
+        console.log(response.data.route.elevation_gain);
+        
+
+        setRouteData({
+            'name': response.data.route.name,
+            'length': response.data.route.length,
+            'elevation': response.data.route.elevation_gain,
+            'url': response.data.route.url
+        });
         
     }
 
     if (GPXUploaded === false) {
         
-        // show only input for gpx upload and route name
+        // first step of route addition - show only input for gpx upload and route name
         return (
 
             <div className="new-route-form" >
@@ -58,14 +84,26 @@ const GPXUploadForm = () => {
     } else {
         
         // GPX already uploaded? = show route info + map + fillable fields for adding more details
+        const { name, length, elevation, url } = routeData;
+        const routeURL = '/storage/gpx/' + url,
+        centerCoordinates = [15.192371159791946, 50.75322702527046],
+        zoom = 15;
+
         return (
             <div className="new-route-form">
-                
-                <div className="route__name">{ routeName }</div>
                 <div className="route-details-container">
-                    <div className="route-detail-container__length"></div>
-                    <div className="route-detail-container__elev"></div>
+                    <div className="route__name">{ name }</div>
+                    <div className="route-details-container__length">{ length / 1000 } km</div>
+                    <div className="route-details-container__elev">{ elevation } m</div>
+                    
+                    <NewRouteDetails />
+                
                 </div>
+                <div className="map-container">
+                    
+                    <DisplayMapWithRoute zoom={zoom} url={routeURL} centerCoordinates={centerCoordinates} />
+                
+                </div>                
             </div>
 
         )

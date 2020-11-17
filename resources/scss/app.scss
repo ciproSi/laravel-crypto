@@ -1,3 +1,20 @@
-body {
-    background-color: rgb(252, 252, 252);
+.page-container {
+    width: 80%;
+    margin: 0 auto;
+}
+
+.map {
+    height: 100vw;
+    width: 100vw;
+  }
+
+.new-route-form {
+    display: flex;
+    
+    .route-details-container {
+        width: 50vw;
+    }
+    .map-container {
+        width: 50vw;
+    }
 }

@@ -8,6 +8,7 @@ import XYZ from 'ol/source/XYZ';
 import {Circle as CircleStyle, Fill, Stroke, Style} from 'ol/style';
 import {Tile as TileLayer, Vector as VectorLayer} from 'ol/layer';
 import {fromLonLat} from 'ol/proj';
+import Attribution from 'ol/control/Attribution';
 
 const DisplayMapWithRoute = (props) => {
     
@@ -49,20 +50,20 @@ const DisplayMapWithRoute = (props) => {
 
         const mapObject = new Map({
             target: 'map',
-            layers: [raster],
+            layers: [raster, vector],
              view: new View({
                 center: fromLonLat(centerCoordinates),
                 zoom: zoom,
             }),
         });
 
-        mapObject.addLayer(vector);
+        // mapObject.addLayer(vector);
 
     }, [])
 
 
     return (
-     <div id="map" className="map-container"></div>
+     <div id="map" className="map"></div>
     )
 }
 
