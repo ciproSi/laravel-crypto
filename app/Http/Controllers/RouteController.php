@@ -6,6 +6,7 @@ use phpGPX\phpGPX;
 
 use Illuminate\Http\Request;
 use phpGPX\Models\GpxFile;
+use App\Models\Route;
 
 class RouteController extends Controller
 {
@@ -17,16 +18,37 @@ class RouteController extends Controller
 
     public function store (Request $request)
     {
-        // $path = $request->file('gpxfile')->store('gpx');
-        // $name = $request->file()->getClientOriginalName();
-
-        // dd($request);
-        $path = $request->file('GPXFile')->store('public/gpx');
         
-        return response($path, 200)
+        // TO DO: back end validation
+        $this->validate($request, [
+            'routeName' => 'required',
+            'GPXFile' => 'required'
+            
+        ]);
+
+        $route_name = $request->input('routeName');
+        $original_extension = $request->file('GPXFile')->getClientOriginalExtension();
+        
+        //unique name of the gpx file based on time() and route name (url endoded) with original extension (which needs to be gpx)
+        $name_to_be_saved = urlencode($route_name) . '_' . time() . '.' . $original_extension;
+        $path = $request->file('GPXFile')->storeAs('public/gpx', $name_to_be_saved);
+        
+        // parsing gpx file to get length and cumulative elevation
+        $gpx = new phpGPX();
+        $file = $gpx->load('./storage/gpx/' . $name_to_be_saved);
+        $stats = $file->tracks[0]->stats->toArray();
+
+        // saving to route to db
+        $route = new Route;
+        $route->name = $route_name;
+        $route->url = $name_to_be_saved;
+        $route->length = $stats['distance'];
+        $route->elevation_gain = $stats['cumulativeElevationGain'];
+        $route->save();
+
+
+        return response(compact('path', 'original_extension', 'route_name', 'name_to_be_saved', 'stats'), 200)
                   ->header('Content-Type', 'application/json');
-
-
         
     }
     

@@ -17,8 +17,8 @@ class CreateRoutesTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('url');
-            $table->unsignedBigInteger('length');
-            $table->unsignedBigInteger('elevation_gain');
+            $table->unsignedBigInteger('length')->nullable();
+            $table->unsignedBigInteger('elevation_gain')->nullable();
             $table->timestamps();
         });
     }
