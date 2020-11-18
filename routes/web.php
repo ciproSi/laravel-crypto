@@ -24,7 +24,9 @@ Route::get('/test', 'RouteController@test');
 
 Route::get('/new-route', 'RouteController@create');
 Route::post('/new-route', 'RouteController@store');
+Route::post('/route/{id}', 'RouteController@update');
 Route::get('/route/{id}', 'RouteController@view');
+
 
 Route::get('/api/activities', 'ActivityController@view');
 

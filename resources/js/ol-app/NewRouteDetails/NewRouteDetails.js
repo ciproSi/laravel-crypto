@@ -5,6 +5,13 @@ import Checkbox from '../Checkbox/Checkbox'
 const NewRouteDetails = (props) => {
 
     const [activities, setActivities] = useState([]);
+    const [routeImage, setRouteImage] = useState([]);
+    const [routeDetails, setRouteDetails] = useState({
+        difficulty: '',
+        description: '',
+        visibility: 'public',
+        activities: []
+    });
 
     // get all available activities (routes are suitable for different activities) from API
     const fetchActivities = async () => {
@@ -24,28 +31,88 @@ const NewRouteDetails = (props) => {
     }, []);
 
     const handleCheckBoxChange = (e) => {
-        
         const checkBoxIndex = activities.findIndex((elm => elm.name == e.target.name));
-        
         activities[checkBoxIndex].checked = !activities[checkBoxIndex].checked;
-
         setActivities([...activities]);
+    }
+
+    const handleFileChange = (e) => {
+        setRouteImage(e.target.files[0]);
+    }
+
+    const handleChange = (e) => {
+        const allowedNames = ['difficulty', 'description', 'visibility'],
+              name = e.target.name,
+              value = e.target.value;
+        
+        if (-1 !== allowedNames.indexOf(name)) {
+            setRouteDetails(prevValues => {
+                return ({...prevValues,
+                         [name]: value
+                })
+            });
+        }
+    }
+
+    const handleSubmit = async (e) => {
+        
+        e.preventDefault();
+
+        // add ids (those ids are activity id from db) of checked activities to to routeDetails
+        // it also prevents to add one id multiple time, if there is validation error and the form is submitted more time
+        activities.forEach(activity => {
+            if (activity.checked && routeDetails.activities.includes(activity.id) == false) {
+                
+                routeDetails.activities.push(activity.id);
+            }
+        })
+        
+        // prepera data to be sent
+        let fd = new FormData();
+        fd.append('routeImage', routeImage, routeImage.name);
+        fd.append('difficulty', routeDetails.difficulty);
+        fd.append('description', routeDetails.description);
+        fd.append('visibility', routeDetails.visibility);
+        fd.append('activities', routeDetails.activities);
+        fd.append('routeID', props.data.id);
+
+        const response = await axios.post('/route/' + props.data.id, fd);
+        console.log(response);
+
     }
 
     return (
         <div className="form">
-            <form action="">
+            <form action="/new-route" onSubmit={ handleSubmit } >
+                
                 <div className="form-group">
                     <label htmlFor="difficulty">Difficulty (1-5)</label>
-                    <input type="text" />
+                    <input type="text" name="difficulty" onChange={ handleChange }/>
                 </div>
+                
                 <div className="form-group">
                     <label htmlFor="description">Description</label>
-                    <textarea name="textarea" rows="8" cols="60"/>
+                    <textarea name="description" rows="8" cols="60" onChange={ handleChange } />
                 </div>
+                
                 <h3>Suitable for</h3>
                 {/* adds one checkbox for every activity */}
                 <Checkbox checkboxes={ activities} handleChange={ handleCheckBoxChange }/>
+
+                <div className="form-group">
+                    <label htmlFor="visibility">Route visibility:</label>
+                        <select id="visibility" name="visibility" onChange={ handleChange }>
+                            <option value="public">Public</option>
+                            <option value="private">Private</option>
+                        </select>
+                </div>
+
+                <div className="form-group">
+                        <label htmlFor="route_image">Choose route picture</label>
+                        <input type="file" name="route_image" onChange={ handleFileChange }/>
+                </div>
+
+                <button>Save new route</button>
             </form>
         </div>
     )

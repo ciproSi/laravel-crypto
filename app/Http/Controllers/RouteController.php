@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Storage;
 use phpGPX\phpGPX;
 use Illuminate\Support\Str;
-
 use Illuminate\Http\Request;
 use phpGPX\Models\GpxFile;
 use App\Models\Route;
+use App\Models\Activity;
 
 class RouteController extends Controller
 {
@@ -59,6 +59,20 @@ class RouteController extends Controller
         $route = Route::findOrFail($id);
 
         return response(compact('route'), 200)
+                  ->header('Content-Type', 'application/json');
+    }
+
+    public function update ($id, Request $request)
+    {
+        
+        // TO DO: validation needs to be finished!
+        $this->validate($request, [
+            'difficulty' => 'required | numeric',
+            'routeImage' => 'required'
+        ]);
+        
+        
+        return response('send to API', 200)
                   ->header('Content-Type', 'application/json');
     }
 

@@ -17,7 +17,6 @@ const GPXUploadForm = () => {
         setGPXFile(e.target.files[0]);
     }
 
-    
 
     const handleSubmit = async (e) => {
         
@@ -29,7 +28,6 @@ const GPXUploadForm = () => {
         
         // send the data to API
         const response = await axios.post('/new-route', fd);
-        console.log(response);
         
         if (response.status === 200) {
             
