@@ -36,7 +36,7 @@ const GPXUploadForm = () => {
             //fetch the just saved data from DB (it was parsed meantime by back-end)
             await fetchRoute(response.data.route_id);
 
-            //this will cause the next of new step to render
+            //this will cause the next step of new route addition to render
             setGPXUploaded(true);
         }
 
@@ -55,7 +55,8 @@ const GPXUploadForm = () => {
             'name': response.data.route.name,
             'length': response.data.route.length,
             'elevation': response.data.route.elevation_gain,
-            'url': response.data.route.url
+            'url': response.data.route.url,
+            'id': response.data.route.id
         });
         
     }
@@ -96,7 +97,7 @@ const GPXUploadForm = () => {
                     <div className="route-details-container__length">{ length / 1000 } km</div>
                     <div className="route-details-container__elev">{ elevation } m</div>
                     
-                    <NewRouteDetails />
+                    <NewRouteDetails data={routeData}/>
                 
                 </div>
                 <div className="map-container">

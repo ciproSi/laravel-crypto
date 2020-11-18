@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Storage;
 use phpGPX\phpGPX;
+use Illuminate\Support\Str;
 
 use Illuminate\Http\Request;
 use phpGPX\Models\GpxFile;
@@ -28,9 +29,9 @@ class RouteController extends Controller
 
         $route_name = $request->input('routeName');
         $original_extension = $request->file('GPXFile')->getClientOriginalExtension();
-        
+
         //unique name of the gpx file based on time() and route name (url endoded) with original extension (which needs to be gpx)
-        $name_to_be_saved = urlencode($route_name) . '_' . time() . '.' . $original_extension;
+        $name_to_be_saved = Str::slug($route_name) . '_' . microtime(true) . '.' . $original_extension;
         $path = $request->file('GPXFile')->storeAs('public/gpx', $name_to_be_saved);
         
         // parsing gpx file to get length and cumulative elevation
@@ -38,7 +39,7 @@ class RouteController extends Controller
         $file = $gpx->load('./storage/gpx/' . $name_to_be_saved);
         $stats = $file->tracks[0]->stats->toArray();
 
-        // saving to route to db
+        // saving the route to db
         $route = new Route;
         $route->name = $route_name;
         $route->url = $name_to_be_saved;

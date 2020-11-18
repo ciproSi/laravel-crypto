@@ -4,13 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Activity;
-class Route extends Model
+use App\Models\Route;
+
+class Activity extends Model
 {
     use HasFactory;
 
-    public function activities ()
+    public function routes ()
     {
-        $this->hasMany(Activity::class);
+        $this->belongsToMany(Route::class);
     }
 }
