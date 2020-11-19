@@ -70,9 +70,11 @@ class RouteController extends Controller
             'difficulty' => 'required | numeric',
             'routeImage' => 'required'
         ]);
-        
-        
-        return response('send to API', 200)
+        $activities = json_decode($request->input('activities'));
+        $route = Route::findOrFail($id);
+        $route->activities()->sync($activities);
+
+        return response(compact('route', 'activities'), 200)
                   ->header('Content-Type', 'application/json');
     }
 

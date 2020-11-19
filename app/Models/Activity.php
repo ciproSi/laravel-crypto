@@ -12,6 +12,6 @@ class Activity extends Model
 
     public function routes ()
     {
-        $this->belongsToMany(Route::class);
+        return $this->belongsToMany(Route::class);
     }
 }

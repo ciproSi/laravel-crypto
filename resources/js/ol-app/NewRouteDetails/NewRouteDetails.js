@@ -73,8 +73,7 @@ const NewRouteDetails = (props) => {
         fd.append('difficulty', routeDetails.difficulty);
         fd.append('description', routeDetails.description);
         fd.append('visibility', routeDetails.visibility);
-        fd.append('activities', routeDetails.activities);
-        fd.append('routeID', props.data.id);
+        fd.append('activities', JSON.stringify(routeDetails.activities));
 
         const response = await axios.post('/route/' + props.data.id, fd);
         console.log(response);
