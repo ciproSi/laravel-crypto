@@ -1,9 +1,10 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react'
+import { Redirect } from 'react-router-dom';
 import Checkbox from '../Checkbox/Checkbox'
 
 const NewRouteDetails = (props) => {
-
+    const [redirect, setRedirect] = useState(null);
     const [activities, setActivities] = useState([]);
     const [routeImage, setRouteImage] = useState([]);
     const [routeDetails, setRouteDetails] = useState({
@@ -76,10 +77,19 @@ const NewRouteDetails = (props) => {
         fd.append('activities', JSON.stringify(routeDetails.activities));
 
         const response = await axios.post('/route/' + props.data.id, fd);
-        console.log(response);
+        
+        if (response.status === 200) {
+            console.log(response.status)
+            setRedirect('/');
+        }
 
     }
 
+    // if (redirect) {
+    //     return (
+    //         <Redirect to={redirect} />
+    //     )
+    // } else {
     return (
         <div className="form">
             <form action="/new-route" onSubmit={ handleSubmit } >
@@ -115,6 +125,7 @@ const NewRouteDetails = (props) => {
             </form>
         </div>
     )
+    
 }
 
 export default NewRouteDetails;

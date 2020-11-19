@@ -80,7 +80,7 @@ return [
 
     'links' => [
         public_path('storage') => storage_path('app/public'),
-        public_path('gpx') => storage_path('app/public/gpx'),
+        // public_path('gpx') => storage_path('app/public/gpx'),
     ],
 
 ];

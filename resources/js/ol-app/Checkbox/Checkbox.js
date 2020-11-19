@@ -23,8 +23,11 @@ const Checkbox = (props) => {
             {
                 props.checkboxes.map((checkbox) => (
                     <div key={ checkbox.id } className="form-group">
-                            <input type="checkbox" name={ checkbox.name } checked={ checkbox.checked } onChange={ props.handleChange } />
-                            { checkbox.name }    
+                            <label htmlFor={ checkbox.name }>
+
+                            <input id={ checkbox.name } type="checkbox" name={ checkbox.name } checked={ checkbox.checked } onChange={ props.handleChange } />
+                            { checkbox.name } 
+                            </label>   
                     </div>
                 ))
             }

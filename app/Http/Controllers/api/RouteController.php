@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\api;
 use Illuminate\Support\Facades\Storage;
 use phpGPX\phpGPX;
 use Illuminate\Support\Str;
@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use phpGPX\Models\GpxFile;
 use App\Models\Route;
 use App\Models\Activity;
+use App\Http\Controllers\Controller;
 
 class RouteController extends Controller
 {
@@ -62,19 +63,36 @@ class RouteController extends Controller
                   ->header('Content-Type', 'application/json');
     }
 
+    // API called to update existing route - gpx file, elevation and distance can't be updated here!
     public function update ($id, Request $request)
     {
         
         // TO DO: validation needs to be finished!
         $this->validate($request, [
-            'difficulty' => 'required | numeric',
-            'routeImage' => 'required'
+            'difficulty' => 'required | numeric | min:1 | max: 5',
+            'description' => 'string',
+            'routeImage' => 'required | mimes:jpeg,bmp,png,jpg'
         ]);
-        $activities = json_decode($request->input('activities'));
+
+        //TO DO: image uploads needs to be finished - resizing
+        //save route img
+        $path = $request->file('routeImage')->store('public/users-images');
+
         $route = Route::findOrFail($id);
+        $route->description = $request->input('description');
+        $route->visibility = $request->input('visibility');
+        $route->difficulty = $request->input('difficulty');
+        $route->img_url = $path;
+        $route->save();
+
+        // we are getting activities as json encoded array, we need to decode it first to pass it then directly do sync()
+        $activities = json_decode($request->input('activities'));
         $route->activities()->sync($activities);
 
-        return response(compact('route', 'activities'), 200)
+        //save route img
+        $path = $request->file('routeImage')->store('public/users-images');
+
+        return response(compact('route', 'activities', 'path'), 200)
                   ->header('Content-Type', 'application/json');
     }
 

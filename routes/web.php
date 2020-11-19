@@ -22,10 +22,10 @@ Route::get('/display-map', 'MapController@index');
 Route::get('/test', 'RouteController@test');
 
 
-Route::get('/new-route', 'RouteController@create');
-Route::post('/new-route', 'RouteController@store');
-Route::post('/route/{id}', 'RouteController@update');
-Route::get('/route/{id}', 'RouteController@view');
+Route::get('/new-route', 'api\RouteController@create');
+Route::post('/new-route', 'api\RouteController@store');
+Route::post('/route/{id}', 'api\RouteController@update');
+Route::get('/route/{id}', 'api\RouteController@view');
 
 
 Route::get('/api/activities', 'ActivityController@view');
